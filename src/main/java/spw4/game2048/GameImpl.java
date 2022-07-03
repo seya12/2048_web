@@ -23,36 +23,70 @@ public class GameImpl implements Game {
     }
   }
 
-    public int getMoves() {
-        // to do ...
-        return 0;
-    }
+  public int getMoves() {
+    return moves;
+  }
 
-    public int getScore() {
-        // to do ...
-        return 0;
-    }
+  public int getScore() {
+    return score;
+  }
 
   public int getValueAt(int x, int y) {
     return board[x][y];
   }
 
 
-    public boolean isOver() {
-        // to do ...
-        return false;
+  public boolean isOver() {
+    if (isWon()) {
+      return true;
     }
+    if (!isFull()) {
+      return false;
+    }
+    Game checkGame = new GameImpl(board);
+    int score = checkGame.getScore();
+    checkGame.move(Direction.up);
+    checkGame.move(Direction.right);
+    checkGame.move(Direction.down);
+    checkGame.move(Direction.left);
 
-    public boolean isWon() {
-        // to do ...
-        return false;
-    }
+    return score == checkGame.getScore();
+  }
 
-    @Override
-    public String toString() {
-        // to do ...
-        return "";
+  private boolean isFull() {
+    for (int i = 0; i < GAME_SIZE; i++) {
+      for (int j = 0; j < GAME_SIZE; j++) {
+        if (board[i][j] == 0) {
+          return false;
+        }
+      }
     }
+    return true;
+  }
+
+  public boolean isWon() {
+    return won;
+  }
+
+  @Override
+  public String toString() {
+    StringBuilder sb = new StringBuilder("Moves: ");
+    sb.append(moves);
+    sb.append(" Score: ");
+    sb.append(score);
+    sb.append("\n");
+    for (int i = 0; i < GAME_SIZE; i++) {
+      for (int j = 0; j < GAME_SIZE; j++) {
+        if (board[i][j] == 0) {
+          sb.append(".    ");
+        } else {
+          sb.append(String.format("%-5d", board[i][j]));
+        }
+      }
+      sb.append("\n");
+    }
+    return sb.toString();
+  }
 
   public void initialize() {
     board = new int[GAME_SIZE][GAME_SIZE];
