@@ -620,81 +620,92 @@ public class GameTest {
     }
   }
 
-  @Test
-  void isOverWhenNewBoardReturnsFalse() {
-    assertFalse(game.isOver());
+  @Nested
+  class IsOver {
+    @Test
+    void isOverWhenNewBoardReturnsFalse() {
+      assertFalse(game.isOver());
+    }
+
+    @Test
+    void isOverWhenFullAndMoreMovesPossibleReturnsTrue() {
+      int[][] board = new int[][]{
+        {2, 4, 2, 4},
+        {4, 2, 4, 2},
+        {2, 4, 2, 4},
+        {4, 2, 4, 4}
+      };
+      game = new GameImpl(board);
+      assertFalse(game.isOver());
+    }
+
+    @Test
+    void isOverWhenNoMoreMovesPossibleReturnsTrue() {
+      int[][] board = new int[][]{
+        {2, 4, 2, 4},
+        {4, 2, 4, 2},
+        {2, 4, 2, 4},
+        {4, 2, 4, 2}
+      };
+      game = new GameImpl(board);
+      assertTrue(game.isOver());
+    }
   }
 
-  @Test
-  void isOverWhenFullAndMoreMovesPossibleReturnsTrue() {
-    int[][] board = new int[][]{
-      {2, 4, 2, 4},
-      {4, 2, 4, 2},
-      {2, 4, 2, 4},
-      {4, 2, 4, 2}
-    };
-    game = new GameImpl(board);
-    assertTrue(game.isOver());
+  @Nested
+  class IsWon {
+    @Test
+    void isWonWhenNewGameReturnsFalse() {
+      assertFalse(game.isWon());
+    }
+
+    @Test
+    void isWonWhenTwo1024TilesGetMergedReturnsTrue() {
+      int[][] board = new int[][]{
+        {0, 0, 0, 0},
+        {1024, 1024, 0, 0},
+        {0, 0, 0, 0},
+        {0, 0, 0, 0}
+      };
+      game = new GameImpl(board);
+      game.move(Direction.left);
+
+      assertAll(
+        () -> assertTrue(game.isWon()),
+        () -> assertTrue(game.isOver()));
+    }
   }
 
-  @Test
-  void isOverWhenNoMoreMovesPossibleReturnsTrue() {
-    int[][] board = new int[][]{
-      {2, 4, 2, 4},
-      {4, 2, 4, 2},
-      {2, 4, 2, 4},
-      {4, 2, 4, 2}
-    };
-    game = new GameImpl(board);
-    assertTrue(game.isOver());
+  @Nested
+  class GetMoves {
+    @Test
+    void getMovesWhenNewGameReturnsZero() {
+      assertEquals(0, game.getMoves());
+    }
+
+    @Test
+    void getMovesWhenMultipleMovesReturnsCount() {
+      int[][] board = new int[][]{
+        {0, 0, 0, 0},
+        {2, 0, 0, 0},
+        {0, 0, 0, 0},
+        {0, 0, 0, 0}
+      };
+      game = new GameImpl(board);
+
+      game.move(Direction.up);
+      game.move(Direction.left);
+      game.move(Direction.down);
+
+      assertEquals(3, game.getMoves());
+    }
   }
 
-  @Test
-  void isWonWhenNewGameReturnsFalse() {
-    assertFalse(game.isWon());
-  }
-
-  @Test
-  void isWonWhenTwo1024TilesGetMergedReturnsTrue() {
-    int[][] board = new int[][]{
-      {0, 0, 0, 0},
-      {1024, 1024, 0, 0},
-      {0, 0, 0, 0},
-      {0, 0, 0, 0}
-    };
-    game = new GameImpl(board);
-    game.move(Direction.left);
-
-    assertAll(
-      () -> assertTrue(game.isWon()),
-      () -> assertTrue(game.isOver()));
-  }
-
-  @Test
-  void getMovesWhenNewGameReturnsZero() {
-    assertEquals(0, game.getMoves());
-  }
-
-  @Test
-  void getMovesWhenMultipleMovesReturnsCount() {
-    int[][] board = new int[][]{
-      {0, 0, 0, 0},
-      {2, 0, 0, 0},
-      {0, 0, 0, 0},
-      {0, 0, 0, 0}
-    };
-    game = new GameImpl(board);
-
-    game.move(Direction.up);
-    game.move(Direction.left);
-    game.move(Direction.down);
-
-    assertEquals(3, game.getMoves());
-  }
-
-  @Test
-  void toStringWhenNewGameReturnsInitialState() {
-    String result = game.toString();
+  @Nested
+  class ToString {
+    @Test
+    void toStringWhenNewGameReturnsInitialState() {
+      String result = game.toString();
 
       assertAll(
         () -> assertTrue(result.contains("Moves: 0")),
@@ -721,7 +732,6 @@ public class GameTest {
     }
   }
 
-
   private int getGameBoardSum() {
     int sum = 0;
     for (int i = 0; i < 4; i++) {
@@ -732,7 +742,6 @@ public class GameTest {
     return sum;
   }
 }
-
 
 /*
 1. test initialize board -> assert 2 tiles

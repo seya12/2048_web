@@ -35,7 +35,6 @@ public class GameImpl implements Game {
     return board[x][y];
   }
 
-
   public boolean isOver() {
     if (isWon()) {
       return true;
@@ -109,16 +108,16 @@ public class GameImpl implements Game {
 
     if (direction == Direction.right) {
       // rotate 180
-      boardRotate();
-      boardRotate();
+      boardRotateLeft();
+      boardRotateLeft();
     } else if (direction == Direction.up) {
       // rotate 90
-      boardRotate();
+      boardRotateLeft();
     } else if (direction == Direction.down) {
       // rotate 270
-      boardRotate();
-      boardRotate();
-      boardRotate();
+      boardRotateLeft();
+      boardRotateLeft();
+      boardRotateLeft();
     }
 
     for (int i = 0; i < GAME_SIZE; i++) {
@@ -129,16 +128,16 @@ public class GameImpl implements Game {
 
     if (direction == Direction.right) {
       // rotate 180
-      boardRotate();
-      boardRotate();
+      boardRotateLeft();
+      boardRotateLeft();
     } else if (direction == Direction.up) {
       // rotate 270
-      boardRotate();
-      boardRotate();
-      boardRotate();
+      boardRotateLeft();
+      boardRotateLeft();
+      boardRotateLeft();
     } else if (direction == Direction.down) {
       // rotate 90
-      boardRotate();
+      boardRotateLeft();
     }
     if (hasChanges) {
       moves++;
@@ -146,12 +145,12 @@ public class GameImpl implements Game {
     }
   }
 
-  void boardRotate() {
+  private void boardRotateLeft() {
     boardTranspose();
     boardReverse();
   }
 
-  void boardTranspose() {
+  private void boardTranspose() {
     for (int i = 0; i < GAME_SIZE; i++) {
       for (int j = i + 1; j < GAME_SIZE; j++) {
         int temp = board[i][j];
@@ -161,7 +160,7 @@ public class GameImpl implements Game {
     }
   }
 
-  void boardReverse() {
+  private void boardReverse() {
     for (int i = 0; i < GAME_SIZE; i++) {
       for (int j = 0, k = GAME_SIZE - 1; j < k; j++, k--) {
         int temp = board[j][i];
