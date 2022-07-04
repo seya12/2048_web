@@ -26,30 +26,35 @@ public class GameTest {
     assertEquals(0, sum);
   }
 
-  @Test
-  void initializeWhenGameIsEmptyTwoTilesAreCreated() {
-    game.initialize();
+  @Nested
+  class Initialize {
+    @Test
+    void initializeWhenGameIsEmptyTwoTilesAreCreated() {
+      game.initialize();
 
-    int sum = getGameBoardSum();
+      int sum = getGameBoardSum();
 
-    assertEquals(4, sum);
+      assertEquals(4, sum);
+    }
+
+    @Test
+    void initializeWhenGameIsNotEmptyTwoTilesAreCreated() {
+      int[][] board = new int[][]{
+        {0, 2, 4, 2},
+        {0, 0, 0, 0},
+        {0, 0, 0, 0},
+        {0, 0, 0, 0}
+      };
+      game = new GameImpl(board);
+      game.initialize();
+
+      int sum = getGameBoardSum();
+
+      assertEquals(4, sum);
+    }
+
   }
 
-  @Test
-  void initializeWhenGameIsNotEmptyTwoTilesAreCreated() {
-    int[][] board = new int[][]{
-      {0, 2, 4, 2},
-      {0, 0, 0, 0},
-      {0, 0, 0, 0},
-      {0, 0, 0, 0}
-    };
-    game = new GameImpl(board);
-    game.initialize();
-
-    int sum = getGameBoardSum();
-
-    assertEquals(4, sum);
-  }
 
   @Nested
   class MoveLeft {
@@ -514,82 +519,105 @@ public class GameTest {
     }
   }
 
-  @Test
-  void moveWhenMoveTileIsCreated() {
-    game.initialize();
-    game.move(Direction.up);
+  @Nested
+  class GeneralMove {
+    @Test
+    void moveWhenMoveTileIsCreated() {
+      game.initialize();
+      game.move(Direction.up);
 
-    int count = 0;
+      int count = 0;
+      count = getCountGameBoardValues(count);
+
+      assertEquals(3, count);
+    }
+
+    @Test
+    void moveWhenNoChangeNoTileIsCreated() {
+      int[][] board = new int[][]{
+        {0, 0, 0, 0},
+        {0, 0, 0, 0},
+        {0, 0, 0, 0},
+        {0, 2, 0, 0}
+      };
+      game = new GameImpl(board);
+
+      game.move(Direction.down);
+
+      int count = 0;
+      count = getCountGameBoardValues(count);
+      assertEquals(1, count);
+    }
+
+    @Test
+    void moveWhenTileIsPresentNewTileIsGenerated() {
+      int[][] board = new int[][]{
+        {0, 0, 0, 0},
+        {0, 0, 0, 0},
+        {0, 0, 2, 0},
+        {0, 0, 0, 2}
+      };
+      game = new GameImpl(board);
+
+      game.move(Direction.down);
+
+      int count = 0;
+      count = getCountGameBoardValues(count);
+      assertEquals(3, count);
+    }
+  }
+
+  private int getCountGameBoardValues(int count) {
     for (int i = 0; i < 4; i++) {
       for (int j = 0; j < 4; j++) {
         if (game.getValueAt(i, j) != 0) count++;
       }
     }
-
-    assertEquals(3, count);
+    return count;
   }
 
-  @Test
-  void moveWhenNoChangeNoTileIsCreated() {
-    int[][] board = new int[][]{
-      {0, 0, 0, 0},
-      {0, 0, 0, 0},
-      {0, 0, 0, 0},
-      {0, 2, 0, 0}
-    };
-    game = new GameImpl(board);
+  @Nested
+  class Score {
+    @Test
+    void scoreWhenGameIsStartedScoreIsZero() {
+      game.initialize();
 
-    game.move(Direction.down);
+      int score = game.getScore();
 
-    int count = 0;
-    for (int i = 0; i < 4; i++) {
-      for (int j = 0; j < 4; j++) {
-        if (game.getValueAt(i, j) != 0) count++;
-      }
+      assertEquals(0, score);
     }
 
-    assertEquals(1, count);
-  }
+    @Test
+    void scoreWhenNoTilesAreMergedScoreDoesNotChange() {
+      int[][] board = new int[][]{
+        {0, 2, 0, 0},
+        {0, 2, 0, 0},
+        {0, 4, 0, 0},
+        {0, 2, 0, 0}
+      };
+      game = new GameImpl(board);
+      game.move(Direction.left);
 
-  @Test
-  void scoreWhenGameIsStartedScoreIsZero() {
-    game.initialize();
+      int score = game.getScore();
 
-    int score = game.getScore();
+      assertEquals(0, score);
+    }
 
-    assertEquals(0, score);
-  }
+    @Test
+    void scoreWhenTilesAreMergedScoreChanges() {
+      int[][] board = new int[][]{
+        {0, 2, 0, 0},
+        {0, 2, 0, 0},
+        {0, 4, 0, 0},
+        {0, 2, 0, 0}
+      };
+      game = new GameImpl(board);
+      game.move(Direction.down);
 
-  @Test
-  void scoreWhenNoTilesAreMergedScoreDoesNotChange() {
-    int[][] board = new int[][]{
-      {0, 2, 0, 0},
-      {0, 2, 0, 0},
-      {0, 4, 0, 0},
-      {0, 2, 0, 0}
-    };
-    game = new GameImpl(board);
-    game.move(Direction.left);
+      int score = game.getScore();
 
-    int score = game.getScore();
-
-    assertEquals(0, score);
-  }
-
-  @Test
-  void scoreWhenTilesAreMergedScoreChanges() {
-    int[][] board = new int[][]{
-      {0, 2, 0, 0},
-      {0, 2, 0, 0},
-      {0, 4, 0, 0},
-      {0, 2, 0, 0}
-    };
-    game = new GameImpl(board);
-    game.move(Direction.down);
-
-    int score = game.getScore();
-
-    assertEquals(4, score);
+      assertEquals(4, score);
+    }
   }
 
   @Test
@@ -668,28 +696,29 @@ public class GameTest {
   void toStringWhenNewGameReturnsInitialState() {
     String result = game.toString();
 
-    assertAll(
-      () -> assertTrue(result.contains("Moves: 0")),
-      () -> assertTrue(result.contains("Score: 0")),
-      () -> assertFalse(result.contains("2")));
-  }
+      assertAll(
+        () -> assertTrue(result.contains("Moves: 0")),
+        () -> assertTrue(result.contains("Score: 0")),
+        () -> assertFalse(result.contains("2")));
+    }
 
-  @Test
-  void toStringWhenGameHasScoreReturnsGameStateWithScore() {
-    int[][] board = new int[][]{
-      {0, 0, 0, 0},
-      {1024, 1024, 0, 0},
-      {0, 0, 0, 0},
-      {0, 0, 0, 0}
-    };
-    game = new GameImpl(board);
-    game.move(Direction.left);
-    String result = game.toString();
+    @Test
+    void toStringWhenGameHasScoreReturnsGameStateWithScore() {
+      int[][] board = new int[][]{
+        {0, 0, 0, 0},
+        {1024, 1024, 0, 0},
+        {0, 0, 0, 0},
+        {0, 0, 0, 0}
+      };
+      game = new GameImpl(board);
+      game.move(Direction.left);
+      String result = game.toString();
 
-    assertAll(
-      () -> assertTrue(result.contains("Moves: 1")),
-      () -> assertTrue(result.contains("Score: 2048")),
-      () -> assertTrue(result.contains("2")));
+      assertAll(
+        () -> assertTrue(result.contains("Moves: 1")),
+        () -> assertTrue(result.contains("Score: 2048")),
+        () -> assertTrue(result.contains("2")));
+    }
   }
 
 

@@ -94,9 +94,6 @@ public class GameImpl implements Game {
   }
 
   private void generateTiles(int amount) {
-    if (isFull())
-      return;
-
     for (int i = 0; i < amount; i++) {
       int x, y;
       do {
