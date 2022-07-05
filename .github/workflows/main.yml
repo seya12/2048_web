@@ -37,6 +37,9 @@ jobs:
       - name: Test with Maven
         run: mvn test
         
+      - name: Package
+        run: mvn package
+        
       - name: Store Artifact
         uses: actions/upload-artifact@v3
         with:
