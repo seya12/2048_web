@@ -1,6 +1,4 @@
-# This is a basic workflow to help you get started with Actions
-
-name: CI
+name: CI/CD
 
 # Controls when the workflow will run
 on:
@@ -41,6 +39,11 @@ jobs:
 
       - name: Test with Maven
         run: mvn test
+        
+      - uses: actions/upload-artifact@v3
+        with:
+          name: game2048.war
+          path: target/game2048.war
     
   package:
     needs: test
@@ -56,16 +59,18 @@ jobs:
       - name: Package
         run: mvn package
         
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
-          name: game2048.war
-          path: target/game2048.war
+          name: test-reports
+          path: |
+            target/surefire-reports/*
+            target/site/jacoco/*
         
   deploy:
     needs: package
     runs-on: self-hosted
     steps:
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with: 
           name: game2048.war
           
