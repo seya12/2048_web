@@ -80,7 +80,7 @@ public class GameServlet extends HttpServlet {
         sb.append("    <script src=\"js/bootstrap.min.js\"></script>\n");
         sb.append("</head>\n");
         sb.append("<body>\n");
-        sb.append("    <h1 class=\"m-5 text-center\">Play 2048:</h1>\n");
+        sb.append("    <h1 class=\"m-5 text-center\">Play 2048</h1>\n");
         sb.append("\n");
         sb.append("    <div class=\"row\">\n");
         sb.append("        <div class=\"col-4\"></div>\n");
