@@ -8,7 +8,7 @@
     <script src="js/bootstrap.min.js"></script>
 </head>
 <body>
-<h1 class="m-5 text-center">Play 2048:</h1>
+<h1 class="m-5 text-center">Play 2048</h1>
 
 <div class="row">
     <div class="col-4"></div>
