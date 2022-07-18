@@ -42,9 +42,11 @@ jobs:
         
       - uses: actions/upload-artifact@v3
         with:
-          name: game2048.war
-          path: target/game2048.war
-    
+          name: test-reports
+          path: |
+            target/surefire-reports/*
+            target/site/jacoco/*
+
   package:
     needs: test
     runs-on: self-hosted
@@ -61,10 +63,8 @@ jobs:
         
       - uses: actions/upload-artifact@v3
         with:
-          name: test-reports
-          path: |
-            target/surefire-reports/*
-            target/site/jacoco/*
+          name: game2048.war
+          path: target/game2048.war
         
   deploy:
     needs: package
